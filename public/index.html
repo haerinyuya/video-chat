@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VideoChat</title>
+    <link rel="stylesheet" href="./css/index.css">
+    <link rel="stylesheet" href="./css/sanitize.css">
+    <script src="https://kit.fontawesome.com/df85f11215.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <header>
+        <div id="header">
+            <div class="header-wrapper">
+                <h1 class="header-title">VideoChat</h1>
+            </div>
+        </div>
+    </header>
+
+    <div class="gap"></div>
+
+    <main>
+        <div class="tab">
+
+            <!-- タブ -->
+            <ul id="tab__menu">
+                <div id="tab-hilight"></div>
+                <li class="tab__menu-item is-active" data-tab="01"><i class="fa-solid fa-user-group fa-2x"></i> ルーム</li>
+                <li class="tab__menu-item" data-tab="02"><i class="fa-solid fa-comments fa-2x"></i> チャット</li>
+                <li class="tab__menu-item" data-tab="03"><i class="fa-solid fa-display fa-2x"></i> ビデオ通話</li>
+                <li class="tab__menu-item" data-tab="04"><i class="fa-solid fa-wrench fa-2x"></i> 設定</li>
+            </ul>
+
+            <!-- パネル -->
+            <div class="tab__panel-container">
+                <div id="tab__panel">
+                    <!-- ルームタブ -->
+                    <div class="tab__panel-box" data-panel="01">
+                        <div class="room-list-container">
+                            <div id="room-show-container">
+                                <div>
+                                    <p>現在のルーム</p>
+                                    <h1 id="room-show"></h1>
+                                    <p>メンバー</p>
+                                    <div id="member-show"></div>
+                                </div>
+                                <button id="leave-button">ルームを抜ける</button>
+                            </div>
+                            <form method="post" id="room-ui-container">
+                                <div>
+                                    <label for="room-name-input">ルーム名を入力</label>
+                                    <input type="text" id="room-name-input" name="room-name" required>
+                                </div>
+                                <div>
+                                    <label for="user-name-input">名前を入力</label>
+                                    <input type="text" id="user-name-input" name="user-name" required>
+                                </div>
+                                <button type="submit" class="join-button">ルームに参加</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- チャットタブ -->
+                    <div class="tab__panel-box" data-panel="02">
+                        <div class="chat-container">
+                            <div id="chat-box"></div>
+                        </div>
+                    </div>
+
+                    <!-- ビデオ通話タブ -->
+                    <div class="tab__panel-box" data-panel="03">
+                        <div class="video-call-container">
+                            <div class="video-area">
+                                <div class="video-container">
+                                    <div class="video-wrapper">
+                                        <video id="local-video" autoplay muted></video>
+                                        <video id="remote-video" autoplay></video>
+                                    </div>
+                                </div>
+                                <div id="video-button-container">
+                                    <button id="camera-button"></button>
+                                    <button id="mic-button"></button>
+                                </div>
+                                <button id="chat-area-button"></button>
+                            </div>
+                            <div class="chat-area">
+                                <div id="sub-chat-box"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 設定タブ -->
+                    <div class="tab__panel-box" data-panel="04">
+                        <div class="setting-container">
+                            <h1>テーマカラー</h1>
+                            <div id="theme-color" class="setting-content">
+                                <button id="ORANGE_LIGHT" class="theme-color-container current-theme">
+                                    <div class="check-mark"></div>
+                                    <h2>オレンジ / ライト</h2>
+                                    <div class="theme-color-preview">
+                                        <div class="left-preview orange"></div>
+                                        <div class="right-preview light"></div>
+                                    </div>
+                                </button>
+                                <button id="ORANGE_DARK" class="theme-color-container">
+                                    <div class="check-mark"></div>
+                                    <h2>オレンジ / ダーク</h2>
+                                    <div class="theme-color-preview">
+                                        <div class="left-preview orange"></div>
+                                        <div class="right-preview dark"></div>
+                                    </div>
+                                </button>
+                                <button id="BLUE_LIGHT" class="theme-color-container">
+                                    <div class="check-mark"></div>
+                                    <h2>ブルー / ライト</h2>
+                                    <div class="theme-color-preview">
+                                        <div class="left-preview blue"></div>
+                                        <div class="right-preview light"></div>
+                                    </div>
+                                </button>
+                                <button id="BLUE_DARK" class="theme-color-container">
+                                    <div class="check-mark"></div>
+                                    <h2>ブルー / ダーク</h2>
+                                    <div class="theme-color-preview">
+                                        <div class="left-preview blue"></div>
+                                        <div class="right-preview dark"></div>
+                                    </div>
+                                </button>
+                                <button id="CREAM_SODA" class="theme-color-container">
+                                    <div class="check-mark"></div>
+                                    <h2>クリームソーダ</h2>
+                                    <div class="theme-color-preview">
+                                        <div class="left-preview green"></div>
+                                        <div class="right-preview cream"></div>
+                                    </div>
+                                </button>
+                                <button class="theme-color-container">
+                                    <div class="check-mark"></div>
+                                    <h2>？？？</h2>
+                                    <div class="theme-color-preview">
+                                        <div class="left-preview melon"></div>
+                                        <div class="right-preview soda"></div>
+                                    </div>
+                                </button>
+                            </div>
+                            <h1>その他</h1>
+                            <div class="setting-content">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- メッセージ入力部 -->
+            <div id="chat-ui-container">
+                <div id="file-preview-container"></div>
+                <form action="javascript:sendMessage()" method="post" id="chat-form">
+                    <input type="text" id="message-input" autofocus>
+                    <button type="submit"><i class="fa-solid fa-paper-plane" id="plane-icon"></i></button>
+                    <i class="fa-solid fa-circle-plus" id="plus-button"></i>
+                    <div id="chat-option-container">
+                        <div class="chat-option-contents">
+                            <input type="file" id="image-input" style="display: none;" accept="image/*">
+                            <button id="image-button" type="button" class="option-content">
+                                <i class="fa-solid fa-image"></i>
+                                <p style="font-size: 10px;">画像</p>
+                            </button>
+                            <input type="file" id="file-input" style="display: none;">
+                            <button id="file-button" type="button" class="option-content">
+                                <i class="fa-solid fa-file"></i>
+                                <p style="font-size: 10px;">ファイル</p>
+                            </button>
+                            <button id="code-button" type="button" class="option-content">
+                                <i class="fa-solid fa-code"></i>
+                                <p style="font-size: 10px;">コード</p>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script type="text/javascript" src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+    <script type="text/javascript" src="./client.js"></script>
+    <script type="text/javascript" src="./index.js"></script>
+</body>
+</html>
