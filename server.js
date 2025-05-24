@@ -55,7 +55,7 @@ wsServer.on('connection', (socket) => {
 				console.log("userID : " + rooms.get(roomName));
 
 				// ルーム内のクライアントに相手のユーザー名を送信
-				SendUserNameArray(rooms.get(roomName));
+				sendUserNameArray(rooms.get(roomName));
 
 				// userIdをクライアントに返す
 				socket.send(JSON.stringify({
@@ -65,32 +65,7 @@ wsServer.on('connection', (socket) => {
 				break;
 
 			case 'leave': // クライアントが部屋を離れる
-				//があれば
-				if (rooms.get(roomName) && users.get(data.userId)) {
-					//usersの中からこのユーザーを削除
-					users.delete(data.userId);
-
-					//userID配列からユーザーを削除
-					const newUserIds = rooms.get(roomName).filter((n) => n !== data.userId);
-					rooms.set(roomName, newUserIds);
-					console.log("userID : " + rooms.get(roomName));
-
-					if (rooms.get(roomName).length > 0) { //部屋に一人以上いれば
-						//相手が抜けたことを知らせる
-						rooms.get(roomName).forEach((roomUserId) => {
-							if (data.userId !== roomUserId) {
-								const userInfo = users.get(roomUserId);
-								userInfo.socket.send(JSON.stringify({
-									type: 'room_update',
-									message: 'partner_left'
-								}));
-							}
-						});
-					} else { //部屋に一人もいなければ
-						//部屋を削除
-						rooms.delete(roomName);
-					}
-				}
+				cleanupUser(data.userId, roomName);
 				break;
 
 			case 'offer': // 部屋内の他のクライアントにメッセージを送信
@@ -108,9 +83,23 @@ wsServer.on('connection', (socket) => {
 				break;
 		}
 	});
+
+	socket.on('close', () => {
+		for (const [userId, userInfo] of users.entries()) {
+			if (userInfo.socket === socket) {
+				for (const [roomName, userIds] of rooms.entries()) {
+					if (userIds.includes(userId)) {
+						cleanupUser(userId, roomName);
+						break;
+					}
+				}
+				break;
+			}
+		}
+	});
 });
 
-function SendUserNameArray(roomUserIds) {
+function sendUserNameArray(roomUserIds) {
 	roomUserIds.forEach((userId) => {
 		roomUserIds.forEach((roomUserId) => {
 			//違うIDのユーザー同士だったら
@@ -125,6 +114,35 @@ function SendUserNameArray(roomUserIds) {
 			}
 		});
 	});
+}
+
+function cleanupUser(userId, roomName) {
+	//があれば
+	if (rooms.get(roomName) && users.get(userId)) {
+		//usersの中からこのユーザーを削除
+		users.delete(userId);
+
+		//userID配列からユーザーを削除
+		const newUserIds = rooms.get(roomName).filter((n) => n !== userId);
+		rooms.set(roomName, newUserIds);
+		console.log("userID : " + rooms.get(roomName));
+
+		if (rooms.get(roomName).length > 0) { //部屋に一人以上いれば
+			//相手が抜けたことを知らせる
+			rooms.get(roomName).forEach((roomUserId) => {
+				if (data.userId !== roomUserId) {
+					const userInfo = users.get(roomUserId);
+					userInfo.socket.send(JSON.stringify({
+						type: 'room_update',
+						message: 'partner_left'
+					}));
+				}
+			});
+		} else { //部屋に一人もいなければ
+			//部屋を削除
+			rooms.delete(roomName);
+		}
+	}
 }
 
 server.listen(port);
