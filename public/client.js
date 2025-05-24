@@ -1,6 +1,7 @@
 'use strict';
 
-const ws = new WebSocket('ws://' + window.location.hostname + ':3000');
+const wsProtocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+const ws = new WebSocket(wsProtocol + window.location.host);
 
 //ルーム
 const leaveRoomButton = document.getElementById('leave-button');
@@ -32,8 +33,6 @@ let localStream;
 let roomName;
 let userId;
 let userName;
-
-let currentTabId = 1; //タブの判定
 
 const peerConnectionConfig = {
 	iceServers: [

@@ -8,6 +8,7 @@
 	let resizeTabPanelItem;
 	let globalLeft = 0;
 	let targetTab;
+	let currentTabId = 1; //タブの判定
 	let tabClickable = true;
 
 	tabMenus.forEach((tabMenu) => {
