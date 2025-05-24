@@ -247,21 +247,21 @@ button {
 
 .tab__panel-container {
 	width: 100vw;
-	height: calc(100vh - 60px);
+	height: calc(100svh - 60px);
 	position: relative;
 	overflow-x: hidden;
 }
 
 #tab__panel {
 	width: 400vw;
-	height: calc(100vh - 60px);
+	height: calc(100svh - 60px);
 	display: flex;
 	position: absolute;
 	transition: left .8s cubic-bezier(.6,0,.4,1);
 }
 
 .tab__panel-box {
-	min-height: calc(100vh - 60px);
+	min-height: calc(100svh - 60px);
 	width: 100vw;
 	padding: 70px 0 0;
 	background-color: var(--main-bg-color);
@@ -387,7 +387,7 @@ button {
 #chat-box {
 	padding: 10px;
 	width: 100%;
-	max-height: calc(100vh - 230px);
+	max-height: calc(100svh - 230px);
 	margin: 10px 0 90px;
 	overflow-y: auto;
 }
@@ -434,7 +434,7 @@ button {
 
 .zoomed-img {
 	width: 100vw;
-	height: 100vh;
+	height: 100svh;
 	align-content: center;
 	background-color: #00000000;
 	border-radius: none;
@@ -580,7 +580,7 @@ button {
 }
 
 .video-area {
-	height: calc(100vh - 210px);
+	height: calc(100svh - 210px);
 	align-items: center;
 	display: flex;
 	justify-content: space-around;
@@ -617,7 +617,7 @@ button {
 
 .chat-area {
 	width: 48vw;
-	height: calc(100vh - 228px);
+	height: calc(100svh - 228px);
 	border: 2px solid var(--sub-solid-color);
 	border-right: none;
 	border-radius: 20px 0 0 20px;
