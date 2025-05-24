@@ -83,11 +83,6 @@ roomUiContainer.onsubmit = (event) => {
 			.then(stream => {
 				window.stream = stream;
 				localVideo.srcObject = stream;
-				// Local側のストリームを設定
-				if (window.stream) {
-					console.log('Added track.');
-					window.stream.getTracks().forEach(track => peerConnection.addTrack(track, window.stream));
-				}
 				ToggleCamera();
 				ToggleMic();
 			})
@@ -99,14 +94,13 @@ roomUiContainer.onsubmit = (event) => {
 		}
 	}
 
+	let remoteStream = new MediaStream();
+	remoteVideo.srcObject = remoteStream;
+
 	// Remote側のストリームを設定
 	peerConnection.ontrack = (event) => {
-		if (event.streams && event.streams[0]) {
-			console.log('Received remote track:', event.streams[0]);
-			remoteVideo.srcObject = event.streams[0];
-		} else {
-			remoteVideo.srcObject = new MediaStream(event.track);
-		}
+		console.log('Received remote track:', event.track);
+		remoteStream.addTrack(event.track);
 	};
 
 	//ICE候補が生成された時の処理
@@ -217,19 +211,7 @@ ws.onmessage = (message) => {
 			userId = data.userId;
 			console.log("My userID:" + userId);
 
-			//offerを作成してローカルにセットして送信
-			peerConnection.createOffer()
-			.then(offer => peerConnection.setLocalDescription(offer))
-			.then(() => {
-				console.log("Offer set and send");
-				ws.send(JSON.stringify({
-					type: 'offer',
-					offer: peerConnection.localDescription,
-					room: roomName,
-					userId:userId
-				}));
-			})
-			.catch(error => console.error("Error setting local description:", error));
+			startMediaAndOffer();
 			break;
 
 		case 'room_update': //誰かが部屋に参加した時相手の名前が来る
@@ -249,6 +231,27 @@ ws.onmessage = (message) => {
 			break;
 	}
 };
+
+function startMediaAndOffer() {
+	navigator.mediaDevices.getUserMedia({ audio: true, video: true })
+	.then(stream => {
+		localVideo.srcObject = stream;
+		stream.getTracks().forEach(track => peerConnection.addTrack(track, stream));
+
+		//offerを作成してローカルにセットして送信
+		return peerConnection.createOffer();
+	})
+	.then(offer => peerConnection.setLocalDescription(offer))
+	.then(() => {
+		ws.send(JSON.stringify({
+			type: 'offer',
+			offer: peerConnection.localDescription,
+			room: roomName,
+			userId: userId
+		}));
+	})
+	.catch(error => alert(error));
+}
 
 let oldUserId = null; //メッセージの上の名前表示のための変数
 let fileSending = false; //ファイル送信中か
