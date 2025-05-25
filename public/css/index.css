@@ -856,7 +856,7 @@ button {
 }
 
 #chat-option-container.is-open {
-	width: 400px;
+	width: 312px;
 	height: 200px;
 	backdrop-filter: blur(10px);
 	background-color: var(--transparent-bg-color);

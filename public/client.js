@@ -559,25 +559,29 @@ cameraButton.onclick = ToggleCamera;
 micButton.onclick = ToggleMic;
 
 function ToggleCamera() {
-	if (stream) {
-		const videoTrack = stream.getVideoTracks()[0];
-		if (videoTrack.enabled) {
-			cameraButton.classList.remove('camera-active');
-		} else {
-			cameraButton.classList.add('camera-active');
+	if (window.stream) {
+		const videoTrack = window.stream.getVideoTracks()[0];
+		if (videoTrack) {
+			if (videoTrack.enabled) {
+				cameraButton.classList.remove('camera-active');
+			} else {
+				cameraButton.classList.add('camera-active');
+			}
+			videoTrack.enabled = !videoTrack.enabled;
 		}
-		videoTrack.enabled = !videoTrack.enabled;
 	}
 }
 
 function ToggleMic() {
-	if (stream) {
-		const audioTrack = stream.getAudioTracks()[0];
-		if (audioTrack.enabled) {
-			micButton.classList.remove('mic-active');
-		} else {
-			micButton.classList.add('mic-active');
+	if (window.stream) {
+		const audioTrack = window.stream.getAudioTracks()[0];
+		if (audioTrack) {
+			if (audioTrack.enabled) {
+				micButton.classList.remove('mic-active');
+			} else {
+				micButton.classList.add('mic-active');
+			}
+			audioTrack.enabled = !audioTrack.enabled;
 		}
-		audioTrack.enabled = !audioTrack.enabled;
 	}
 }
