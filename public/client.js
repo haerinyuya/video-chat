@@ -196,6 +196,9 @@ ws.onmessage = (message) => {
 				localVideo.srcObject = stream;
 				stream.getTracks().forEach(track => peerConnection.addTrack(track, stream));
 
+				ToggleCamera();
+				ToggleMic();
+
 				return peerConnection.createOffer();
 			})
 			.then(offer => peerConnection.setLocalDescription(offer))
