@@ -30,13 +30,30 @@
 ## ■ 使用方法
 1. `ルーム`タブで、任意の`ルーム名`と`名前`を入力し、`ルームに参加`ボタンを押します。
 2. 同じ`ルーム名`で参加したユーザーとマッチングします。
-3. チャットやビデオ通話を楽しみます。
-   * チャットでは、**メッセージ入力欄の左端**にある`＋`ボタンを押して**画像**もしくは**ファイル**の添付ができます。
-   * ビデオ通話では、**画面下部**にある`カメラアイコン`ボタンと`マイクアイコン`ボタンそれぞれで**カメラとマイクのオン/オフ**ができます。
-   * ビデオ通話では、**画面右上**にある`メッセージアイコン`ボタンで**チャット画面の表示/非表示**ができます。
 
 > [!IMPORTANT]
 > 同じルームに入れるのは**2人まで**です。3人以上が同じルーム名を使うことはできません。
+
+3. チャットやビデオ通話を楽しみます。
+   * チャットでは、**メッセージ入力欄の左端**にある`＋`ボタンを押して**画像**もしくは**ファイル**の添付ができます。
+     
+     <img width="60%" alt="video-chat_demo_1" src="https://github.com/user-attachments/assets/124be3fc-9cf3-4221-808b-80fc98812895" />
+     <img width="60%" alt="video-chat_demo_2" src="https://github.com/user-attachments/assets/183d71b1-9e2b-404d-a857-ebadc6ae8603" />
+     <img width="60%" alt="video-chat_demo_3" src="https://github.com/user-attachments/assets/f89b7be5-9987-4e3c-a018-302a333f36f8" />
+     
+   * 送られてきた**画像**はクリック/タップして**拡大**、その後画面右下の`ダウンロードアイコン`ボタンで**ダウンロード**できます。
+   * 送られてきた**ファイル**はクリック/タップで**ダウンロード**できます。
+     
+     <img width="60%" alt="video-chat_demo_4" src="https://github.com/user-attachments/assets/654c71a9-9c0c-4077-9e6d-0a9d360565dc" />
+     <img width="60%" alt="video-chat_demo_5" src="https://github.com/user-attachments/assets/e3157979-ad40-4568-a393-e53d7f284be9" />
+
+   * ビデオ通話では、**画面下部**にある`カメラアイコン`ボタンと`マイクアイコン`ボタンそれぞれで**カメラとマイクのオン/オフ**ができます。
+     
+     <img width="60%" alt="video-chat_demo_6" src="https://github.com/user-attachments/assets/dd58bf18-a542-4c39-beb6-8f4847df605d" />
+
+   * ビデオ通話では、**画面右上**にある`メッセージアイコン`ボタンで**チャット画面の表示/非表示**ができます。
+     
+     <img width="60%" alt="video-chat_demo_7" src="https://github.com/user-attachments/assets/85813030-fc9b-404d-9800-9373c0dc1109" />
 
 &nbsp;  
 
@@ -59,8 +76,8 @@
 
 #### バックエンド
 * Node.js
-  * ws
-  * express
+  * express 4.19.2
+  * ws 8.17.0
 
 #### PaaS
 * Render
