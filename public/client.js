@@ -34,8 +34,6 @@ let roomName;
 let userId;
 let userName;
 
-let remoteStream = new MediaStream();
-
 const peerConnectionConfig = {
 	iceServers: [
 		{urls: 'stun:stun.l.google.com:19302'},
@@ -68,29 +66,44 @@ roomUiContainer.onsubmit = (event) => {
 		userName: userName
 	}));
 
-	if (navigator.mediaDevices) {
-		if (navigator.mediaDevices.getUserMedia) {
-			// カメラとマイクの開始
-			const constraints = {
-				audio: true,
-				video: true
-			};
-			navigator.mediaDevices.getUserMedia(constraints)
-			.then(stream => {
-				window.stream = stream;
-				localVideo.srcObject = stream;
-				ToggleCamera();
-				ToggleMic();
-			})
-			.catch(event => {
-				alert('Camera start error.\n\n' + event.name + ': ' + event.message);
-			});
-		} else {
-			alert('Your browser does not support getUserMedia API');
-		}
-	}
+	peerConnection = new RTCPeerConnection(peerConnectionConfig);
 
-	remoteVideo.srcObject = remoteStream;
+	//データチャネルを作成
+	dataChannel = peerConnection.createDataChannel(roomName, { ordered: true });
+	SetupDataChannel(dataChannel);
+
+	// Remote側のストリームを設定
+	peerConnection.ontrack = (event) => {
+		if (event.streams && event.streams[0]) {
+			console.log('Received remote track:', event.streams[0]);
+			remoteVideo.srcObject = event.streams[0];
+		} else {
+			remoteVideo.srcObject = new MediaStream(event.track);
+		}
+	};
+
+	//ICE候補が生成された時の処理
+	peerConnection.onicecandidate = event => {
+		if (event.candidate) {
+			console.log("send ICE");
+			ws.send(JSON.stringify({
+				type: 'candidate',
+				candidate: event.candidate,
+				room: roomName,
+				userId: userId
+			}));
+		} else {
+			// すべてのICE候補が生成されたことを示す
+			console.log("All ICE candidates have been generated.");
+		}
+	};
+
+	//相手がデータチャネルを同じ名前で作った時の処理
+	peerConnection.ondatachannel = event => {
+		console.log('Data channel created:', event);
+		SetupDataChannel(event.channel);
+		dataChannel = event.channel;
+	};
 };
 
 //部屋から抜けるボタンを押した時とウィンドウを閉じた時
@@ -177,7 +190,24 @@ ws.onmessage = (message) => {
 			userId = data.userId;
 			console.log("My userID:" + userId);
 
-			startMediaAndOffer();
+			navigator.mediaDevices.getUserMedia({ audio: true, video: true })
+			.then(stream => {
+				window.stream = stream;
+				localVideo.srcObject = stream;
+				stream.getTracks().forEach(track => peerConnection.addTrack(track, stream));
+
+				return peerConnection.createOffer();
+			})
+			.then(offer => peerConnection.setLocalDescription(offer))
+			.then(() => {
+				ws.send(JSON.stringify({
+					type: 'offer',
+					offer: peerConnection.localDescription,
+					room: roomName,
+					userId: userId
+				}));
+			})
+			.catch(err => alert(err));
 			break;
 
 		case 'room_update': //誰かが部屋に参加した時相手の名前が来る
@@ -197,62 +227,6 @@ ws.onmessage = (message) => {
 			break;
 	}
 };
-
-function startMediaAndOffer() {
-	peerConnection = new RTCPeerConnection(peerConnectionConfig);
-
-	//データチャネルを作成
-	dataChannel = peerConnection.createDataChannel(roomName, { ordered: true });
-	SetupDataChannel(dataChannel);
-
-	// Remote側のストリームを設定
-	peerConnection.ontrack = (event) => {
-		console.log('Received remote track:', event.track);
-		remoteStream.addTrack(event.track);
-	};
-
-	//ICE候補が生成された時の処理
-	peerConnection.onicecandidate = event => {
-		if (event.candidate) {
-			console.log("send ICE");
-			ws.send(JSON.stringify({
-				type: 'candidate',
-				candidate: event.candidate,
-				room: roomName,
-				userId: userId
-			}));
-		} else {
-			// すべてのICE候補が生成されたことを示す
-			console.log("All ICE candidates have been generated.");
-		}
-	};
-
-	//相手がデータチャネルを同じ名前で作った時の処理
-	peerConnection.ondatachannel = event => {
-		console.log('Data channel created:', event);
-		SetupDataChannel(event.channel);
-		dataChannel = event.channel;
-	};
-
-	navigator.mediaDevices.getUserMedia({ audio: true, video: true })
-	.then(stream => {
-		localVideo.srcObject = stream;
-		stream.getTracks().forEach(track => peerConnection.addTrack(track, stream));
-
-		//offerを作成してローカルにセットして送信
-		return peerConnection.createOffer();
-	})
-	.then(offer => peerConnection.setLocalDescription(offer))
-	.then(() => {
-		ws.send(JSON.stringify({
-			type: 'offer',
-			offer: peerConnection.localDescription,
-			room: roomName,
-			userId: userId
-		}));
-	})
-	.catch(error => alert(error));
-}
 
 let oldUserId = null; //メッセージの上の名前表示のための変数
 let fileSending = false; //ファイル送信中か

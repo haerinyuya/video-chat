@@ -130,7 +130,7 @@ function cleanupUser(userId, roomName) {
 		if (rooms.get(roomName).length > 0) { //部屋に一人以上いれば
 			//相手が抜けたことを知らせる
 			rooms.get(roomName).forEach((roomUserId) => {
-				if (data.userId !== roomUserId) {
+				if (userId !== roomUserId) {
 					const userInfo = users.get(roomUserId);
 					userInfo.socket.send(JSON.stringify({
 						type: 'room_update',

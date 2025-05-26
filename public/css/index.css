@@ -649,7 +649,7 @@ button {
 	height: 9vw;
 	background-color: var(--sub-bg-color);
 	border: 5px solid var(--main-bg-color);
-	border-radius: 25px;
+	border-radius: 20px;
 	position: absolute;
 	top: 15px;
 	left: 15px;
